@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:note_app/view/auth/sign_up_screen.dart';
 import 'package:note_app/view/home/home_screen.dart';
+import 'package:note_app/view/note_app/view/note_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreeen extends StatefulWidget {
@@ -97,7 +98,7 @@ class _SignInScreeenState extends State<SignInScreeen> {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const HomeScreen(),
+                                  builder: (context) => const NoteHome(),
                                 ),
                                 (route) => false);
                           } else {
