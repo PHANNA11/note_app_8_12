@@ -39,5 +39,11 @@ class NoteDatabase {
     var db = await initializeDatabase();
     await db.delete(noteTable, where: '$noteId=?', whereArgs: [note.id]);
   }
+
+  Future<void> updateNote(NoteModel note) async {
+    var db = await initializeDatabase();
+    await db.update(noteTable, note.toMap(),
+        where: '$noteId=?', whereArgs: [note.id]);
+  }
 }
 //ORM =  Object relational mapping

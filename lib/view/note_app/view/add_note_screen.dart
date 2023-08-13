@@ -7,7 +7,8 @@ import '../database/note_connection.dart';
 import '../model/note_model.dart';
 
 class AddUpdateNoteScreen extends StatefulWidget {
-  const AddUpdateNoteScreen({super.key});
+  AddUpdateNoteScreen({super.key, this.note});
+  NoteModel? note;
 
   @override
   State<AddUpdateNoteScreen> createState() => _AddUpdateNoteScreenState();
@@ -17,11 +18,31 @@ class _AddUpdateNoteScreenState extends State<AddUpdateNoteScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController bodyController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+  void clearText() {
+    setState(() {
+      titleController.text = '';
+      bodyController.text = '';
+      dateController.text = DateTime.now().toString();
+    });
+  }
+
+  void initData() {
+    setState(() {
+      titleController.text = widget.note!.title;
+      bodyController.text = widget.note!.body;
+      dateController.text = widget.note!.date;
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    dateController.text = DateTime.now().toString();
+    if (widget.note == null) {
+      clearText();
+    } else {
+      initData();
+    }
   }
 
   @override
@@ -52,15 +73,23 @@ class _AddUpdateNoteScreenState extends State<AddUpdateNoteScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await NoteDatabase()
-              .insertNote(NoteModel(
-                  id: DateTime.now().microsecondsSinceEpoch,
-                  title: titleController.text,
-                  body: bodyController.text,
-                  date: dateController.text))
-              .whenComplete(() => Navigator.pop(context));
+          widget.note == null
+              ? await NoteDatabase()
+                  .insertNote(NoteModel(
+                      id: DateTime.now().microsecondsSinceEpoch,
+                      title: titleController.text,
+                      body: bodyController.text,
+                      date: dateController.text))
+                  .whenComplete(() => Navigator.pop(context))
+              : await NoteDatabase()
+                  .updateNote(NoteModel(
+                      id: widget.note!.id,
+                      title: titleController.text,
+                      body: bodyController.text,
+                      date: DateTime.now().toString()))
+                  .whenComplete(() => Navigator.pop(context));
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.done),
       ),
     );
   }

@@ -65,7 +65,7 @@ class _NoteHomeState extends State<NoteHome> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const AddUpdateNoteScreen(),
+                builder: (context) => AddUpdateNoteScreen(),
               ));
         },
         child: const Icon(Icons.add),

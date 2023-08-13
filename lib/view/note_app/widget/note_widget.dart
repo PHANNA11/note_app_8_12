@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:note_app/view/note_app/database/note_connection.dart';
 import 'package:note_app/view/note_app/model/note_model.dart';
+import 'package:note_app/view/note_app/view/add_note_screen.dart';
 
 class NoteWidget {
   Widget noteCard(NoteModel note) => Padding(
@@ -28,11 +29,17 @@ class NoteWidget {
                 borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(15),
                     bottomRight: Radius.circular(15)),
-                onPressed: (context) {},
+                onPressed: (context) async {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddUpdateNoteScreen(note: note),
+                      ));
+                },
                 backgroundColor: const Color(0xFF21B7CA),
                 foregroundColor: Colors.white,
-                icon: Icons.share,
-                label: 'Share',
+                icon: Icons.edit_document,
+                label: 'Edit',
               ),
             ],
           ),
