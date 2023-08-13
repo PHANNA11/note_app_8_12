@@ -3,7 +3,9 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:note_app/view/note_app/database/note_connection.dart';
 import 'package:note_app/view/note_app/model/note_model.dart';
+import 'package:note_app/view/note_app/view/add_note_screen.dart';
 import 'package:note_app/view/note_app/widget/note_widget.dart';
+import 'package:note_app/view/note_app/widget/refresh_widget.dart';
 
 class NoteHome extends StatefulWidget {
   const NoteHome({super.key});
@@ -14,7 +16,7 @@ class NoteHome extends StatefulWidget {
 
 class _NoteHomeState extends State<NoteHome> {
   List<NoteModel> noteList = [];
-  getNotes() async {
+  Future<void> getNotes() async {
     await NoteDatabase().getNotes().then((value) {
       setState(() {
         noteList = value;
@@ -48,19 +50,23 @@ class _NoteHomeState extends State<NoteHome> {
             ),
           ),
           Expanded(
-              child: ListView.builder(
-                  itemCount: noteList.length,
-                  itemBuilder: (context, index) =>
-                      NoteWidget().noteCard(noteList[index]))),
+            child: RefreshWidget(
+                    onRefresh: getNotes,
+                    child: ListView.builder(
+                        itemCount: noteList.length,
+                        itemBuilder: (context, index) =>
+                            NoteWidget().noteCard(noteList[index])))
+                .buildAndroid(context),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await NoteDatabase().insertNote(NoteModel(
-              id: DateTime.now().microsecondsSinceEpoch,
-              title: 'Task for Study',
-              body: 'Hello word Python',
-              date: DateTime.now().toString()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddUpdateNoteScreen(),
+              ));
         },
         child: const Icon(Icons.add),
       ),

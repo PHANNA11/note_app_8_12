@@ -34,5 +34,10 @@ class NoteDatabase {
     List<Map<String, dynamic>> resultNote = await db.query(noteTable);
     return resultNote.map((note) => NoteModel.fromMap(note)).toList();
   }
+
+  Future<void> deleteNote(NoteModel note) async {
+    var db = await initializeDatabase();
+    await db.delete(noteTable, where: '$noteId=?', whereArgs: [note.id]);
+  }
 }
 //ORM =  Object relational mapping
