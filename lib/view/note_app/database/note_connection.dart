@@ -45,5 +45,13 @@ class NoteDatabase {
     await db.update(noteTable, note.toMap(),
         where: '$noteId=?', whereArgs: [note.id]);
   }
+
+  Future<List<NoteModel>> searchResult(String search) async {
+    var db = await initializeDatabase();
+    List<Map<String, dynamic>> resultNote = await db.rawQuery(
+        'SELECT * FROM $noteTable WHERE $noteTitle LIKE ? OR $noteBody LIKE ?',
+        ['%$search%', '%$search%']);
+    return resultNote.map((note) => NoteModel.fromMap(note)).toList();
+  }
 }
 //ORM =  Object relational mapping

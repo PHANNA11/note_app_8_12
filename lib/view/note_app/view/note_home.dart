@@ -15,6 +15,7 @@ class NoteHome extends StatefulWidget {
 }
 
 class _NoteHomeState extends State<NoteHome> {
+  final searchController = TextEditingController();
   List<NoteModel> noteList = [];
   Future<void> getNotes() async {
     await NoteDatabase().getNotes().then((value) {
@@ -43,9 +44,19 @@ class _NoteHomeState extends State<NoteHome> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
+              controller: searchController,
+              onChanged: (values) async {
+                await NoteDatabase()
+                    .searchResult(searchController.text)
+                    .then((value) {
+                  setState(() {
+                    noteList = value;
+                  });
+                });
+              },
               decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.search),
+                  suffixIcon: Icon(Icons.search),
                   hintText: 'search note'),
             ),
           ),
