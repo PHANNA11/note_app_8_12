@@ -16,7 +16,7 @@ class NoteDatabase {
       join(path, 'notesdb.db'),
       onCreate: (database, version) async {
         await database.execute(
-          'CREATE TABLE $noteTable($noteId INTEGER PRIMARY KEY, $noteTitle TEXT,$noteBody TEXT,$noteDate TEXT)',
+          'CREATE TABLE $noteTable($noteId INTEGER PRIMARY KEY,$fcategoryId INTEGER, $noteTitle TEXT,$noteBody TEXT,$noteDate TEXT)',
         );
       },
       version: 1,

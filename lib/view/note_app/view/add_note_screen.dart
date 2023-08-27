@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:note_app/view/note_app/model/category_model.dart';
 import 'package:note_app/view/note_app/widget/formfield_widget.dart';
 
 import '../database/note_connection.dart';
 import '../model/note_model.dart';
 
 class AddUpdateNoteScreen extends StatefulWidget {
-  AddUpdateNoteScreen({super.key, this.note});
+  AddUpdateNoteScreen({super.key, this.note, this.category});
   NoteModel? note;
+  CategoryModel? category;
 
   @override
   State<AddUpdateNoteScreen> createState() => _AddUpdateNoteScreenState();
@@ -62,6 +64,7 @@ class _AddUpdateNoteScreenState extends State<AddUpdateNoteScreen> {
             label: 'Body',
             hinText: 'Description',
             controller: bodyController,
+            maxLines: 20,
           ),
           FromFieldWidget(
             readOnly: true,
@@ -78,11 +81,13 @@ class _AddUpdateNoteScreenState extends State<AddUpdateNoteScreen> {
                   .insertNote(NoteModel(
                       id: DateTime.now().microsecondsSinceEpoch,
                       title: titleController.text,
+                      categoryId: widget.category!.categoryId,
                       body: bodyController.text,
                       date: dateController.text))
                   .whenComplete(() => Navigator.pop(context))
               : await NoteDatabase()
                   .updateNote(NoteModel(
+                      categoryId: widget.category!.categoryId,
                       id: widget.note!.id,
                       title: titleController.text,
                       body: bodyController.text,

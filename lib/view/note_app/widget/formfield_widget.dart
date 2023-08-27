@@ -16,18 +16,18 @@ class FromFieldWidget extends StatelessWidget {
   String? hinText;
   bool? readOnly;
   bool? obscureText;
-  int? maxLines;
+  int? maxLines = 1;
   String? label;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       child: TextField(
         controller: controller,
         obscureText: obscureText ?? false,
         readOnly: readOnly ?? false,
-        minLines: maxLines ?? 1,
+        maxLines: maxLines,
         decoration: InputDecoration(
           label: Text(label!),
           hintText: hinText,
