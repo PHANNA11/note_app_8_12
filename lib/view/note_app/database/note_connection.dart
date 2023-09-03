@@ -35,6 +35,13 @@ class NoteDatabase {
     return resultNote.map((note) => NoteModel.fromMap(note)).toList();
   }
 
+  Future<List<NoteModel>> filterNotes({int? categoryId}) async {
+    var db = await initializeDatabase();
+    List<Map<String, dynamic>> resultNote = await db.rawQuery(
+        "SELECT * FROM $noteTable WHERE $fcategoryId=?", [categoryId]);
+    return resultNote.map((note) => NoteModel.fromMap(note)).toList();
+  }
+
   Future<void> deleteNote(NoteModel note) async {
     var db = await initializeDatabase();
     await db.delete(noteTable, where: '$noteId=?', whereArgs: [note.id]);

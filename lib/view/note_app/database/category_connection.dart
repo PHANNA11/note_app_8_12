@@ -33,4 +33,16 @@ class CategoryDatabase {
     List<Map<String, dynamic>> result = await db.query(categoryTableName);
     return result.map((e) => CategoryModel.fromJson(e)).toList();
   }
+
+  Future<void> deleteContagory({required int? categoryId}) async {
+    var db = await initializeDatabase();
+    await db.delete(categoryTableName,
+        where: '$fcategoryId=?', whereArgs: [categoryId]);
+  }
+
+  Future<void> updateCategory({CategoryModel? categoryModel}) async {
+    var db = await initializeDatabase();
+    await db.update(categoryTableName, categoryModel!.toJson(),
+        where: '$fcategoryId=?', whereArgs: [categoryModel.categoryId]);
+  }
 }

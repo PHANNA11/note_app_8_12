@@ -20,6 +20,7 @@ class NoteHome extends StatefulWidget {
 
 class _NoteHomeState extends State<NoteHome> {
   final searchController = TextEditingController();
+  CategoryModel? tapCategory;
   List<CategoryModel> categorys = [
     CategoryModel(categoryId: 0, categoryName: 'All'),
   ];
@@ -95,26 +96,46 @@ class _NoteHomeState extends State<NoteHome> {
                   child: SizedBox(
                     height: 60,
                     width: double.infinity,
-                    //color: Colors.red,
                     child: ListView.builder(
                       itemCount: categorys.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Colors.white10,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                              child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              categorys[index].categoryName,
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                        child: GestureDetector(
+                          onTap: () async {
+                            setState(() {
+                              tapCategory = categorys[index];
+                            });
+                            tapCategory!.categoryName == 'All'
+                                ? getNotes()
+                                : await NoteDatabase()
+                                    .filterNotes(
+                                        categoryId: tapCategory!.categoryId)
+                                    .then((value) {
+                                    setState(() {
+                                      noteList = value;
+                                    });
+                                  });
+                          },
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: tapCategory != null &&
+                                      tapCategory!.categoryId ==
+                                          categorys[index].categoryId
+                                  ? Colors.blueGrey
+                                  : Colors.white10,
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          )),
+                            child: Center(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                categorys[index].categoryName,
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                            )),
+                          ),
                         ),
                       ),
                     ),
@@ -125,7 +146,7 @@ class _NoteHomeState extends State<NoteHome> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CategoryScreen(),
+                          builder: (context) => const CategoryScreen(),
                         ));
                   },
                   child: SizedBox(
@@ -167,7 +188,7 @@ class _NoteHomeState extends State<NoteHome> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    AddUpdateNoteScreen(category: categorys[1]),
+                    AddUpdateNoteScreen(category: tapCategory),
               ));
         },
         child: const Icon(Icons.add),
